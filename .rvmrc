@@ -1,0 +1,2 @@
+rvm --create use "ruby-1.9.3-p0@pht_authui"
+rvm_trust_rvmrcs_flag=1
