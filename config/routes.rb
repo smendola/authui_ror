@@ -1,4 +1,6 @@
 Authui::Application.routes.draw do
+  resources :users
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -6,8 +8,8 @@ Authui::Application.routes.draw do
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
 
-  match 'users' => 'user#list'
-  match 'users/:username' => 'user#show'
+#  match 'users' => 'user#list'
+#  match 'users/:username' => 'user#show'
   
 
   # Sample of named route:
@@ -15,7 +17,7 @@ Authui::Application.routes.draw do
   # This route can be invoked with purchase_url(:id => product.id)
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+#  resources :users
 
   # Sample resource route with options:
   #   resources :products do
