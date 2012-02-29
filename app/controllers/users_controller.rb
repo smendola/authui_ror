@@ -1,8 +1,15 @@
 class UsersController < ApplicationController
+
+  def initialize
+    @svc = JsonRpcClient.new 'http://localhost:3001/service/auth'
+  end
+
   # GET /users
   # GET /users.xml
   def index
-    @users = User.all
+    @users = @svc.ListUsers.map do |container| 
+          User.new container['user']
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -13,12 +20,15 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
+    container = @svc.GetUser params[:id]
+    @user = User.new container['user']
 
+=begin
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @user }
     end
+=end
   end
 
   # GET /users/new
@@ -34,7 +44,13 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
+    container = @svc.GetUser params[:id]
+    @user = User.new container['user']
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @user }
+    end
+
   end
 
   # POST /users
@@ -72,8 +88,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @user = User.find(params[:id])
-    @user.destroy
+    @svc.DeleteUser params[:id]
 
     respond_to do |format|
       format.html { redirect_to(users_url) }

@@ -1,0 +1,15 @@
+%p#notice= notice
+
+
+%ul
+  %li
+    = @user.username
+  %li
+    = @user.last_name
+  %li
+    = @user.first_name
+
+
+= link_to 'Edit', edit_user_path(@user)
+\|
+= link_to 'Back', users_path
