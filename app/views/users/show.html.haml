@@ -1,13 +1,21 @@
 %p#notice= notice
 
-
-%ul
-  %li
-    = @user.username
-  %li
-    = @user.last_name
-  %li
-    = @user.first_name
+%table
+  %tr
+    %th
+      Username
+    %td
+      = @user.username
+  %tr
+    %th
+      First name
+    %td
+      = @user.first_name
+  %tr
+    %th
+      Last Name
+    %td
+      = @user.last_name
 
 
 = link_to 'Edit', edit_user_path(@user)

@@ -3,22 +3,23 @@
 %table
   %tr
     %th
+      (id)
     %th
+      Username
     %th
+      First Name
     %th
-    %th
-    %th
-    %th
+      Last Name
 
   - @users.each do |user|
     %tr
       %td= user.id
-      %td= user.username
+      %td= link_to user.username, user
       %td= user.first_name
       %td= user.last_name
-      %td= link_to 'Show', user
-      %td= link_to 'Edit', edit_user_path(user)
-      %td= link_to 'Delete', user, :confirm => 'Are you sure?', :method => :delete
+      -# %td= link_to 'Show', user
+      -# %td= link_to 'Edit', edit_user_path(user)
+      -# %td= link_to 'Delete', user, :confirm => 'Are you sure?', :method => :delete
 
 %br
 

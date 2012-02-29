@@ -11,10 +11,12 @@ class UsersController < ApplicationController
           User.new container['user']
     end
 
+=begin
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @users }
     end
+=end
   end
 
   # GET /users/1
@@ -36,10 +38,12 @@ class UsersController < ApplicationController
   def new
     @user = User.new
 
+=begin
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @user }
     end
+=end
   end
 
   # GET /users/1/edit
