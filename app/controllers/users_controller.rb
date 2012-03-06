@@ -7,10 +7,22 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users = @svc.ListUsers.map do |container|
-          User.new container['user']
-    end
 
+    @js_file_names = ['user_index.js']
+
+    @roles = [['Administrator','Admin'], ['Guest','Guest'], ['Reviewer', "Reviewer"]]
+
+    role_name = params[:role_name_filter]
+    if role_name.blank?
+      @users = @svc.ListUsers.map do |container|
+        User.new container['user']
+      end
+    else
+      @users = @svc.ListUsersInRole(role_name).map do |container|
+            User.new container['user']
+      end
+    end
+    render :layout => 'application'
 =begin
     respond_to do |format|
       format.html # index.html.erb
