@@ -7,7 +7,6 @@
  */
 
 $(document).ready(function () {
-    alert('laded');
     $('#role_name_filter_role').on('change', function() {
         alert('changed');
         $.param.querystring(location.href, 'role_name_filter=' + $("#role_name_filter_role[selected]").value)

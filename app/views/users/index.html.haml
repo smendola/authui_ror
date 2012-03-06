@@ -1,26 +1,8 @@
 %h1 Listing users
 
 = select "role_name_filter", "role", @roles, {:include_blank => false, :prompt=>'<i>*Filter by role*</i>'.html_safe} , :class=>'toolbarChoice'
-%table
-  %tr
-    %th
-      (id)
-    %th
-      Username
-    %th
-      First Name
-    %th
-      Last Name
 
-  - @users.each do |user|
-    %tr
-      %td= user.id
-      %td= link_to user.username, user
-      %td= user.first_name
-      %td= user.last_name
-      -# %td= link_to 'Show', user
-      -# %td= link_to 'Edit', edit_user_path(user)
-      -# %td= link_to 'Delete', user, :confirm => 'Are you sure?', :method => :delete
+= render :partial => 'users_list'
 
 %br
 
