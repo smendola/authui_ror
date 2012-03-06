@@ -76,20 +76,16 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.new
-
-    logger.debug params
-    logger.debug params[:user]
-    logger.debug params[:user][:username]
-
-    # username = params[:username]
-    # first_name = params[:first_name]
-    # last_name = params[:last_name]
-
     no_error = true
     begin
-      container = @svc.UpdateUser({:userx => params[:user]})
+      # update the user
+      container = @svc.UpdateUser({:user => params[:user]})
+      @user = User.new container['user']
     rescue Exception => e
+      # get the user because something went wrong and the edit template expect a real user model
+      container = @svc.GetUser params[:username]
+      @user = User.new container['user']
+
       no_error = false
       @user.errors.add(:name, e.inspect)
     end
@@ -99,9 +95,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(:action => 'show', :username => params[:user][:username], :notice => 'User was successfully updated.') }
         format.xml  { head :ok }
       else
-        logger.debug "Errors = " + @user.errors.inspect
-        format.html { render "/users/"+params[:user][:username]+"/edit" }
-        # format.html { redirect_to(:action => 'edit', :username => params[:user][:username], :notice => 'User was NOT successfully updated.') }
+        format.html { render :action => 'edit' }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
