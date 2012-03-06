@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users = @svc.ListUsers.map do |container| 
+    @users = @svc.ListUsers.map do |container|
           User.new container['user']
     end
 
@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    container = @svc.GetUser params[:id]
+    container = @svc.GetUser params[:username]
     @user = User.new container['user']
 
 =begin
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    container = @svc.GetUser params[:id]
+    container = @svc.GetUser params[:username]
     @user = User.new container['user']
     respond_to do |format|
       format.html # show.html.erb
@@ -76,14 +76,32 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.find(params[:id])
+    @user = User.new
+
+    logger.debug params
+    logger.debug params[:user]
+    logger.debug params[:user][:username]
+
+    # username = params[:username]
+    # first_name = params[:first_name]
+    # last_name = params[:last_name]
+
+    no_error = true
+    begin
+      container = @svc.UpdateUser({:userx => params[:user]})
+    rescue Exception => e
+      no_error = false
+      @user.errors.add(:name, e.inspect)
+    end
 
     respond_to do |format|
-      if @user.update_attributes(params[:user])
-        format.html { redirect_to(@user, :notice => 'User was successfully updated.') }
+      if no_error
+        format.html { redirect_to(:action => 'show', :username => params[:user][:username], :notice => 'User was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
+        logger.debug "Errors = " + @user.errors.inspect
+        format.html { render "/users/"+params[:user][:username]+"/edit" }
+        # format.html { redirect_to(:action => 'edit', :username => params[:user][:username], :notice => 'User was NOT successfully updated.') }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
@@ -92,7 +110,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @svc.DeleteUser params[:id]
+    @svc.DeleteUser params[:username]
 
     respond_to do |format|
       format.html { redirect_to(users_url) }

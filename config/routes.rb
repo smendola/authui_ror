@@ -1,5 +1,23 @@
 Authui::Application.routes.draw do
-  resources :users
+  # resources :users
+
+#     users GET    /users(.:format)          {:action=>"index", :controller=>"users"}
+#           POST   /users(.:format)          {:action=>"create", :controller=>"users"}
+#  new_user GET    /users/new(.:format)      {:action=>"new", :controller=>"users"}
+# edit_user GET    /users/:id/edit(.:format) {:action=>"edit", :controller=>"users"}
+#      user GET    /users/:id(.:format)      {:action=>"show", :controller=>"users"}
+#           PUT    /users/:id(.:format)      {:action=>"update", :controller=>"users"}
+#           DELETE /users/:id(.:format)      {:action=>"destroy", :controller=>"users"}
+
+  # this is equivalent to resources :user, except we are passing in the param as :username instead
+  # of the default :id
+  match '/users(.:format)'                 => 'users#index',   :via => [:get],    :as => 'users'
+  match '/users(.:format)'                 => 'users#create',  :via => [:post]
+  match '/users/new(.:format)'             => 'users#new',     :via => [:get],    :as => 'new_user'
+  match '/users/:username/edit(.:format)'  => 'users#edit',    :via => [:get],    :as => 'edit_user'
+  match '/users/:username(.:format)'       => 'users#show',    :via => [:get],    :as => 'user'
+  match '/users/:username(.:format)'       => 'users#update',  :via => [:put]
+  match '/users/:username(.:format)'       => 'users#destroy', :via => [:delete]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -10,7 +28,7 @@ Authui::Application.routes.draw do
 
 #  match 'users' => 'user#list'
 #  match 'users/:username' => 'user#show'
-  
+
 
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
