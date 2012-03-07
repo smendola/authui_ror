@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
 
   def initialize
+    @js_file_names = []
     @svc = JsonRpcClient.new 'http://localhost:3001/service/auth'
   end
 
@@ -36,6 +37,7 @@ class UsersController < ApplicationController
   def show
     container = @svc.GetUser params[:username]
     @user = User.new container['user']
+    render :layout => 'application'
 
 =begin
     respond_to do |format|
@@ -49,6 +51,7 @@ class UsersController < ApplicationController
   # GET /users/new.xml
   def new
     @user = User.new
+    render :layout => 'application'
 
 =begin
     respond_to do |format|
@@ -62,18 +65,34 @@ class UsersController < ApplicationController
   def edit
     container = @svc.GetUser params[:username]
     @user = User.new container['user']
+    render :layout => 'application'
+=begin
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @user }
     end
+=end
 
   end
 
   # POST /users
   # POST /users.xml
   def create
-    @user = User.new(params[:user])
 
+    begin
+      # update the user
+      data= { :user => params[:user] }
+      data[:user][:password] = "123"
+      container = @svc.AddUser data
+      @user = User.new container['user']
+      redirect_to(@user, :notice => 'User was successfully created.')
+    rescue Exception => e
+      @user = User.new params[:user], false
+      @user.errors.add(:name, e.inspect)
+      render :action => "new", :layout => 'application'
+    end
+
+=begin
     respond_to do |format|
       if @user.save
         format.html { redirect_to(@user, :notice => 'User was successfully created.') }
@@ -83,33 +102,30 @@ class UsersController < ApplicationController
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
+=end
   end
 
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    no_error = true
     begin
       # update the user
-      container = @svc.UpdateUser({:user => params[:user]})
+      data= { :user => params[:user] }
+      container = @svc.UpdateUser(data)
       @user = User.new container['user']
     rescue Exception => e
       # get the user because something went wrong and the edit template expect a real user model
       container = @svc.GetUser params[:username]
       @user = User.new container['user']
-
-      no_error = false
       @user.errors.add(:name, e.inspect)
     end
 
-    respond_to do |format|
-      if no_error
-        format.html { redirect_to(:action => 'show', :username => params[:user][:username], :notice => 'User was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => 'edit' }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
-      end
+    if !@user.errors.any?
+      redirect_to :action => 'show',
+                  :username => params[:user][:username],
+                  :notice => 'User was successfully updated.'
+    else
+      render :action => 'edit', :layout => 'application'
     end
   end
 

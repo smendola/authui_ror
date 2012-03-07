@@ -9,16 +9,17 @@ class User
   #include ActiveModel::Serialization
 
   attr_accessor :id, :username, :first_name, :last_name, :created_at, :password, :updated_at
-  attr_accessor :name
   attr_reader   :errors
+  attr_accessor :persisted
 
   validates_presence_of :username, :last_name
 
-  def initialize(attributes = {})
+  def initialize(attributes = {}, persisted=nil)
     attributes.each do |name, value|
       send("#{name}=", value)
     end
     @errors = ActiveModel::Errors.new(self)
+    @persisted = !persisted.nil? ? persisted : !attributes.empty?
   end
 
   def to_key
@@ -28,5 +29,9 @@ class User
 
   def to_s
     self.username
+  end
+
+  def persisted?
+    @persisted
   end
 end

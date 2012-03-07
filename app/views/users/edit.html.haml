@@ -1,30 +1,6 @@
 %h1 Editing user
 
--#= render 'form'
-
-= form_for @user do |f|
-  -if @user.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-
-  %ul
-    %li
-      = f.label :username
-      = f.text_field :username
-    %li
-      = f.label :last_name
-      = f.text_field :last_name
-    %li
-      = f.label :first_name
-      = f.text_field :first_name
-
-  .actions
-    -#= f.submit 'Save', { :method => 'put' }
-    = button_to 'Save', { :controller => 'users', :username => @user.username }, :method => :put
-
+= render :partial => 'form'
 
 = link_to 'Show', @user
 \|
